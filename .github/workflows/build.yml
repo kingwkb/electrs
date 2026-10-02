@@ -23,6 +23,7 @@ jobs:
 
       - name: Checkout specific tag
         run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
           TARGET="${{ github.event.inputs.target_tag }}"
           if [ -n "$TARGET" ]; then
             git checkout "$TARGET"
