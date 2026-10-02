@@ -1,0 +1,41 @@
+name: Build electrs (Debian 13)
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: rust:trixie
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Install build dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            clang \
+            cmake \
+            libclang-dev
+
+      - name: Build and verify electrs
+        run: |
+          cargo run --locked --release -- --version
+
+      - name: Prepare binary artifact
+        run: |
+          mkdir -p output
+          cp target/release/electrs output/electrs
+          chmod +x output/electrs
+
+      - name: Upload electrs artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: electrs-${{ github.ref_name }}-debian13-amd64
+          path: output/electrs
