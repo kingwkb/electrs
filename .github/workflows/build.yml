@@ -50,5 +50,5 @@ jobs:
       - name: Upload electrs artifact
         uses: actions/upload-artifact@v7
         with:
-          name: electrs-${{ github.ref_name }}-debian13-amd64
+          name: electrs-${{ github.event.inputs.target_tag || github.ref_name }}-debian13-amd64
           path: output/electrs
