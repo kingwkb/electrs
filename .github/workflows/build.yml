@@ -5,7 +5,10 @@ on:
     tags:
       - "v*"
   workflow_dispatch:
-
+    inputs:
+          target_tag:
+            description: 'Git Tag to checkout and build (e.g. v0.12.0)'
+            required: true
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,6 +18,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
+
+      - name: Checkout specific tag
+        run: |
+          TARGET="${{ github.event.inputs.target_tag }}"
+          if [ -n "$TARGET" ]; then
+            git checkout "$TARGET"
+          fi
 
       - name: Install build dependencies
         run: |
